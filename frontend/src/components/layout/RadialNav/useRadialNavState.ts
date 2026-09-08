@@ -11,13 +11,13 @@ export interface NavModule {
 export const NAV_MODULES: NavModule[] = [
   { path: "/", label: "Inicio", icon: "⌂", implemented: true },
   { path: "/personas", label: "Personas", icon: "◉", implemented: true },
-  { path: "/casos", label: "Casos", icon: "⚖", implemented: false },
-  { path: "/alertas", label: "Alertas", icon: "⚠", implemented: false },
-  { path: "/documentos", label: "Documentos", icon: "☷", implemented: false },
-  { path: "/establecimientos", label: "Establecimientos", icon: "⌂◼", implemented: false },
-  { path: "/analitica", label: "Analitica", icon: "▲", implemented: false },
-  { path: "/deteccion", label: "Deteccion", icon: "◈", implemented: false },
-  { path: "/administracion", label: "Administracion", icon: "⚙", implemented: false },
+  { path: "/casos", label: "Casos", icon: "⚖", implemented: true },
+  { path: "/alertas", label: "Alertas", icon: "⚠", implemented: true },
+  { path: "/documentos", label: "Documentos", icon: "☷", implemented: true },
+  { path: "/establecimientos", label: "Establecimientos", icon: "⌂◼", implemented: true },
+  { path: "/analitica", label: "Analitica", icon: "▲", implemented: true },
+  { path: "/deteccion", label: "Deteccion", icon: "◈", implemented: true },
+  { path: "/administracion", label: "Administracion", icon: "⚙", implemented: true },
 ];
 
 export function useRadialNavState() {

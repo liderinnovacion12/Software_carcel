@@ -1,14 +1,14 @@
-import { Card } from "@/design-system";
-import { formatNumber } from "@/lib/format";
+import { AnimatedNumber, Card } from "@/design-system";
 
 interface IndicatorCardProps {
   label: string;
   value: number;
   suffix?: string;
   tone?: "neutral" | "critical";
+  decimals?: number;
 }
 
-export function IndicatorCard({ label, value, suffix, tone = "neutral" }: IndicatorCardProps) {
+export function IndicatorCard({ label, value, suffix, tone = "neutral", decimals = 0 }: IndicatorCardProps) {
   return (
     <Card>
       <p style={{ margin: 0, color: "var(--color-text-muted)", fontSize: "var(--font-size-sm)" }}>
@@ -22,7 +22,7 @@ export function IndicatorCard({ label, value, suffix, tone = "neutral" }: Indica
           color: tone === "critical" ? "var(--color-critical)" : "var(--color-text-primary)",
         }}
       >
-        {formatNumber(value)}
+        <AnimatedNumber value={value} decimals={decimals} />
         {suffix && (
           <span style={{ fontSize: "var(--font-size-md)", color: "var(--color-text-muted)", marginLeft: "4px" }}>
             {suffix}

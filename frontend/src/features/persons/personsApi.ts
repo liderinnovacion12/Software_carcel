@@ -1,52 +1,23 @@
-import { apiRequest } from "@/lib/apiClient";
+import { getPersonCases, getPersonProfile, getPersonTimeline } from "@/data/queries";
+import type {
+  LegalCaseOut,
+  LocationOut,
+  PersonProfileOut as PersonProfile,
+  TimelineEvent,
+} from "@/data/queries";
 
-export interface LocationOut {
-  establishment_name: string;
-  area_name: string | null;
-  cell_code: string | null;
-  effective_from: string;
-  effective_to: string | null;
-}
-
-export interface PersonProfile {
-  id: string;
-  internal_code: string;
-  first_name: string;
-  last_name: string;
-  full_name: string;
-  identification_type: string;
-  identification_number: string;
-  birth_date: string;
-  sex: string;
-  status: string;
-  current_location: LocationOut | null;
-}
-
-export interface LegalCaseOut {
-  id: string;
-  radicado: string;
-  authority: string;
-  case_type_label: string;
-  status: string;
-  opened_at: string;
-  closed_at: string | null;
-}
-
-export interface TimelineEvent {
-  date: string;
-  type: string;
-  title: string;
-  description: string;
-}
+export type { LegalCaseOut, LocationOut, PersonProfile, TimelineEvent };
 
 export function fetchPersonProfile(personId: string): Promise<PersonProfile> {
-  return apiRequest<PersonProfile>(`/persons/${personId}`);
+  const profile = getPersonProfile(personId);
+  if (!profile) return Promise.reject(new Error("Persona no encontrada."));
+  return Promise.resolve(profile);
 }
 
 export function fetchPersonCases(personId: string): Promise<LegalCaseOut[]> {
-  return apiRequest<LegalCaseOut[]>(`/persons/${personId}/cases`);
+  return Promise.resolve(getPersonCases(personId));
 }
 
 export function fetchPersonTimeline(personId: string): Promise<TimelineEvent[]> {
-  return apiRequest<TimelineEvent[]>(`/persons/${personId}/timeline`);
+  return Promise.resolve(getPersonTimeline(personId));
 }

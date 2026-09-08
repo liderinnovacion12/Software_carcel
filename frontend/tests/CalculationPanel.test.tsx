@@ -1,44 +1,20 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CalculationPanel } from "@/features/calculations/CalculationPanel";
+import { searchPersons } from "@/data/queries";
 
-const PERSON_ID = "11111111-1111-1111-1111-111111111111";
-
-vi.mock("@/lib/apiClient", () => ({
-  apiRequest: vi.fn(async (path: string) => {
-    if (path === `/persons/${PERSON_ID}/calculations`) {
-      return [
-        {
-          id: "run-1",
-          rule_reference: "demo-redencion-v1",
-          calculation_date: "2026-01-01",
-          status: "completado",
-          result_summary: { tiempo_pendiente_dias: 900 },
-          responsible_source: "Generado en datos semilla",
-          details: [
-            {
-              step_order: 1,
-              label: "Tiempo total de la condena",
-              input_snapshot: {},
-              output_value: "2190",
-              unit: "dias",
-              notes: null,
-            },
-          ],
-        },
-      ];
-    }
-    throw new Error(`Unexpected path in test: ${path}`);
-  }),
-}));
+// The golden case (Andres) always has a seeded "demo-redencion-v1" calculation
+// run (see @/data/db.ts), so we can assert against the real data layer
+// directly instead of mocking a backend that no longer exists.
+const andres = searchPersons("Andres Felipe Mendoza")[0];
 
 function renderPanel() {
   const queryClient = new QueryClient();
   render(
     <QueryClientProvider client={queryClient}>
-      <CalculationPanel personId={PERSON_ID} />
+      <CalculationPanel personId={andres.person_id} />
     </QueryClientProvider>
   );
 }

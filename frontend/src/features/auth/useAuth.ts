@@ -1,9 +1,8 @@
 import { useCallback, useState } from "react";
-import { clearTokens, getAccessToken, setTokens } from "@/lib/auth/tokenStorage";
-import { login as loginRequest } from "@/features/auth/authApi";
+import { hasActiveSession, login as loginRequest, logout as logoutRequest } from "@/features/auth/authApi";
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => Boolean(getAccessToken()));
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => hasActiveSession());
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -11,8 +10,7 @@ export function useAuth() {
     setIsSubmitting(true);
     setError(null);
     try {
-      const tokens = await loginRequest(username, password);
-      setTokens(tokens.access_token, tokens.refresh_token);
+      await loginRequest(username, password);
       setIsAuthenticated(true);
       return true;
     } catch {
@@ -24,7 +22,7 @@ export function useAuth() {
   }, []);
 
   const logout = useCallback(() => {
-    clearTokens();
+    logoutRequest();
     setIsAuthenticated(false);
   }, []);
 

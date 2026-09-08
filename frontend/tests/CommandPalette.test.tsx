@@ -5,27 +5,9 @@ import { MemoryRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CommandPalette } from "@/components/search/CommandPalette";
 
-vi.mock("@/lib/apiClient", () => ({
-  apiRequest: vi.fn(async (path: string) => {
-    if (path === "/search") {
-      return {
-        query: "andres",
-        results: [
-          {
-            person_id: "11111111-1111-1111-1111-111111111111",
-            full_name: "Andres Felipe Mendoza Rios",
-            internal_code: "BIALCO-000001",
-            identification_number: "1000999888",
-            establishment_name: "Establecimiento Demo",
-            status: "activo",
-            match_reason: "Coincidencia por nombre",
-          },
-        ],
-      };
-    }
-    throw new Error(`Unexpected path in test: ${path}`);
-  }),
-}));
+// No mocking needed: the app is a static demo backed by an in-memory,
+// deterministically-seeded dataset (@/data), so searching for the golden
+// case "Andres" against the real data layer is both realistic and stable.
 
 function renderPalette(onClose = vi.fn()) {
   const queryClient = new QueryClient();
@@ -41,7 +23,6 @@ function renderPalette(onClose = vi.fn()) {
 
 describe("CommandPalette", () => {
   afterEach(() => {
-    vi.clearAllMocks();
     localStorage.clear();
   });
 
@@ -50,7 +31,7 @@ describe("CommandPalette", () => {
     const { onClose } = renderPalette();
 
     const input = screen.getByLabelText(/buscar personas/i);
-    await user.type(input, "andres");
+    await user.type(input, "Andres Felipe Mendoza");
 
     await waitFor(() =>
       expect(screen.getByText("Andres Felipe Mendoza Rios")).toBeInTheDocument()

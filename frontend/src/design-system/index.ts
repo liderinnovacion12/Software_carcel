@@ -6,3 +6,6 @@ export type { TableColumn } from "./components/Table";
 export { EmptyState } from "./components/EmptyState";
 export { Skeleton, SkeletonBlock } from "./components/Skeleton";
 export { Input } from "./components/Input";
+export { AnimatedNumber } from "./components/AnimatedNumber";
+export { ProgressBar } from "./components/ProgressBar";
+export { PageMotion, StaggerGrid, StaggerCard, staggerContainer, staggerItem } from "./motion";

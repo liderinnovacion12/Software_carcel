@@ -1,17 +1,8 @@
-import { apiRequest } from "@/lib/apiClient";
+import { getDashboardIndicators } from "@/data/queries";
+import type { DashboardIndicators } from "@/data/queries";
 
-export interface DashboardIndicators {
-  poblacion_registrada: number;
-  casos_activos: number;
-  casos_pendientes_revision: number;
-  expedientes_incompletos: number;
-  redenciones_pendientes: number;
-  establecimientos_count: number;
-  capacidad_total: number;
-  ocupacion_actual: number;
-  ocupacion_porcentaje: number;
-}
+export type { DashboardIndicators };
 
 export function fetchDashboardIndicators(): Promise<DashboardIndicators> {
-  return apiRequest<DashboardIndicators>("/dashboard/indicators");
+  return Promise.resolve(getDashboardIndicators());
 }

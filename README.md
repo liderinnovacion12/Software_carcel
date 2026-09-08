@@ -3,98 +3,102 @@
 Bienestar Integral, Acompanamiento, Logistica y Coordinacion.
 
 Plataforma institucional de demostracion para la gestion de la situacion
-juridico-administrativa de personas privadas de la libertad. Este repositorio
-contiene la **Fase 1 (fundacion)** y **Fase 2 (recorrido dorado)** del
-desarrollo: un demo funcional de extremo a extremo con datos sinteticos.
+juridico-administrativa de personas privadas de la libertad.
 
 > Todos los datos de personas, procesos y establecimientos son ficticios.
 > Ver "Datos sinteticos para demostracion" en la interfaz.
 
-## Arquitectura
+## Dos formas de correr este repositorio
 
-- `backend/` — API en FastAPI + SQLAlchemy + Alembic + PostgreSQL (`/api/v1/...`).
-- `frontend/` — React + TypeScript + Vite, con navegacion radial semicircular
-  en el borde derecho (en vez del sidebar convencional).
-- `docker/` — Docker Compose, Dockerfiles y configuracion de Nginx.
+Este repositorio contiene **dos rutas independientes** hacia la misma demo:
 
-Servicios: PostgreSQL, Redis (reservado para uso futuro), MinIO (reservado
-para documentos en una fase posterior), backend, frontend y Nginx como proxy
-inverso unico (puerto 80).
+1. **Demo publica estatica (`frontend/`, por defecto)** — el frontend genera su
+   propio dataset sintetico en el navegador (~800 personas, casos, alertas,
+   calculos, etc.) y no depende de ningun backend. Pensada para publicarse en
+   Vercel u otro hosting estatico, sin servidores que mantener vivos.
+2. **Backend real on-premise (`backend/` + `docker/`)** — API en FastAPI +
+   PostgreSQL con RBAC, migraciones y auditoria real, pensada para un
+   despliegue institucional futuro. Sigue intacta en el repositorio pero la
+   demo publica **no la usa**.
 
-## Puesta en marcha
+## Demo estatica (frontend)
 
-1. Copie el archivo de entorno de ejemplo:
+```powershell
+cd frontend
+npm install
+npm run dev
+```
 
-   ```powershell
-   Copy-Item .env.example .env
-   ```
+Abra `http://localhost:5173/` e inicie sesion:
 
-2. Levante el stack completo:
+- Usuario: `admin`
+- Contrasena: `Bialco2026*`
 
-   ```powershell
-   docker compose -f docker/docker-compose.yml up -d --build
-   ```
+Esta es una demostracion publica sin datos reales: el inicio de sesion es una
+verificacion local en el navegador, no un mecanismo de seguridad.
 
-3. Verifique que los servicios esten saludables:
+### Publicar en Vercel
 
-   ```powershell
-   docker compose -f docker/docker-compose.yml ps
-   ```
+1. Cree un proyecto nuevo en Vercel a partir de este repositorio.
+2. En la configuracion del proyecto, defina el **Root Directory** como
+   `frontend`.
+3. Vercel detecta Vite automaticamente (`frontend/vercel.json` ya define
+   `buildCommand`, `outputDirectory` y el rewrite de SPA). No se requieren
+   variables de entorno.
+4. Despliegue. El sitio queda 100% estatico — sin base de datos, sin backend,
+   sin costos de servidor.
 
-4. Aplique las migraciones de base de datos:
-
-   ```powershell
-   docker compose -f docker/docker-compose.yml exec backend alembic upgrade head
-   ```
-
-5. Siembre los datos sinteticos (~800 personas + caso destacado):
-
-   ```powershell
-   docker compose -f docker/docker-compose.yml exec backend python -m scripts.seed --reset
-   ```
-
-6. Abra `http://localhost/` e inicie sesion:
-
-   - Usuario: `admin`
-   - Contrasena: `Bialco2026*`
-
-La API queda documentada en `http://localhost/docs`.
-
-## Recorrido de demostracion (golden path)
+### Recorrido de demostracion (golden path)
 
 1. Inicie sesion como Administrador BIALCO.
-2. Observe los indicadores del tablero (Inicio) — provienen de la base de datos.
+2. Observe los indicadores del tablero (Inicio) — calculados en tiempo real
+   sobre los datos sinteticos generados en el navegador.
 3. Presione `Ctrl+K` y busque "Andres".
-4. Abra su perfil operativo-juridico.
-5. Revise su ubicacion actual, procesos legales y linea de tiempo.
-6. Revise el calculo de tiempo/condena con su detalle de trazabilidad.
-7. Confirme que los modulos aun no construidos (Casos, Alertas, Documentos,
-   etc.) muestran un estado honesto de "no disponible en esta fase" en vez de
-   controles simulados.
+4. Abra su perfil operativo-juridico: ubicacion, procesos legales, linea de
+   tiempo y calculo de tiempo/condena con detalle de trazabilidad.
+5. Explore Casos, Alertas, Documentos, Establecimientos, Analitica, Deteccion
+   y Administracion desde la navegacion radial (borde derecho) — todos con
+   datos generados, no "proximamente".
+6. Pruebe el "Modo presentacion" desde el tablero para la vista de pantalla
+   completa con KPIs animados.
 
-## Pruebas
+### Pruebas
 
-Backend:
+```powershell
+cd frontend
+npm run test
+npm run build
+```
+
+## Backend real on-premise (opcional, para desarrollo futuro)
+
+El backend FastAPI + PostgreSQL sigue disponible para quien quiera continuar
+la version institucional real (autenticacion JWT, RBAC server-side, auditoria,
+migraciones Alembic). No es necesario para la demo publica.
+
+```powershell
+Copy-Item .env.example .env
+docker compose -f docker/docker-compose.yml up -d --build
+docker compose -f docker/docker-compose.yml exec backend alembic upgrade head
+docker compose -f docker/docker-compose.yml exec backend python -m scripts.seed --reset
+```
+
+Abra `http://localhost/` (usuario `admin`, contrasena `Bialco2026*`); la API
+queda documentada en `http://localhost/docs`.
 
 ```powershell
 docker compose -f docker/docker-compose.yml exec backend pytest
 ```
 
-Frontend:
+## Alcance
 
-```powershell
-docker compose -f docker/docker-compose.yml exec frontend npm run test
-docker compose -f docker/docker-compose.yml exec frontend npm run build
-```
+Construido: poblacion sintetica (~800 personas), busqueda global, perfil
+operativo-juridico, procesos legales, linea de tiempo, motor de calculo de
+tiempo/condena con trazabilidad completa, motor de alertas, casos,
+documentos, establecimientos, analitica con graficas, modo presentacion,
+modulo de deteccion (vision por computador simulada) y panel de
+administracion de solo lectura.
 
-## Alcance de esta fase
-
-Construido: autenticacion y RBAC (con un unico rol "Administrador General"),
-poblacion sintetica (~800 personas), busqueda global, perfil operativo-juridico,
-procesos legales, linea de tiempo, motor de calculo de tiempo/condena con
-trazabilidad completa, y un tablero con indicadores reales.
-
-Fuera de alcance en esta fase (rutas reservadas, sin controles simulados):
-motor de alertas, flujo de trabajo de casos, gestion documental, motor de
-reglas configurable, simulador de impacto, modo presentacion, gestion de
-establecimientos, panel de administracion completo, vision por computador.
+Fuera de alcance: motor de reglas configurable con aprobacion/versionado,
+gestion documental con carga de archivos real, integraciones externas,
+multi-institucion, PWA/offline.
