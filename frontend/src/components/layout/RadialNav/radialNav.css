@@ -1,0 +1,109 @@
+.radial-nav {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 60;
+}
+
+.radial-nav__handle {
+  position: relative;
+  z-index: 2;
+  width: 40px;
+  height: 88px;
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border: 1px solid var(--color-border);
+  border-right: none;
+  background: var(--color-bg-surface);
+  color: var(--color-accent-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.25);
+  transition: background var(--motion-fast) var(--motion-easing);
+}
+
+.radial-nav__handle:hover,
+.radial-nav__handle[aria-expanded="true"] {
+  background: var(--color-bg-surface-raised);
+}
+
+.radial-nav__items {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  width: 0;
+  height: 0;
+}
+
+.radial-nav__item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(0, 0) scale(0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--motion-base) var(--motion-easing),
+    opacity var(--motion-fast) var(--motion-easing);
+}
+
+.radial-nav--expanded .radial-nav__item {
+  transform: translate(var(--tx), var(--ty)) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.radial-nav__button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-surface-raised);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--motion-easing),
+    color var(--motion-fast) var(--motion-easing),
+    border-color var(--motion-fast) var(--motion-easing);
+}
+
+.radial-nav__button:hover,
+.radial-nav__button--focused {
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+.radial-nav__button--active {
+  background: var(--color-accent-muted);
+  border-color: var(--color-accent);
+  color: var(--color-accent-strong);
+}
+
+.radial-nav__tooltip {
+  position: absolute;
+  right: 52px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  background: var(--color-bg-surface-raised);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--motion-easing);
+}
+
+.radial-nav__button:hover + .radial-nav__tooltip,
+.radial-nav__button:focus-visible + .radial-nav__tooltip {
+  opacity: 1;
+}
