@@ -19,6 +19,7 @@ frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 frontend/coverage/
+frontend/*.tsbuildinfo
 
 # Docker
 docker/postgres/data/
